@@ -1,16 +1,15 @@
 import requests, bs4, time
 
-def FixString(string=""):
-    return string.replace('%3A',':').replace('%2F', '/')
-
+FixString = lambda string: string.replace('%3A',':').replace('%2F', '/')
 class BusinessCard():
     def __init__(self):
         self.name = ""
         self.phone = ""
-        self.website = None
-    
+        self.website = None    
     def __str__(self):
         return f'{self.name} - {self.phone} - {self.website}'
+    def ToJSON(self):
+        return {'name': self.name, 'phone': self.phone, 'website': self.website}
     
 class YPCABusiness(BusinessCard):
     def __init__(self, data):
@@ -34,7 +33,6 @@ class YellowPagesCanada():
         result_div = html.select('div.resultList')[0]
         entries = result_div.select('div.listing__content__wrap--flexed')
         return entries
-
     def GetBusiness(self, category='plumber', location="", pages=1, delay=1.0):
         b = []
         for n in range(pages):
