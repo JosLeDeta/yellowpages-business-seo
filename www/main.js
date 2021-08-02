@@ -16,6 +16,14 @@ ws.onmessage = function (event) {
     {
         SetScoreValue(res.id, res.score);
     }
+    else if(res.action == 'final_results')
+    {
+        result_section[0].innerHTML = '';
+        res.data.forEach(business => {
+            result_section.append(RasterItem(business));
+            SetScoreValue(business.id, business.score);
+        });
+    }
 }
 
 search_button.on('click', () => {
@@ -32,8 +40,11 @@ search_button.on('click', () => {
 
 function RasterItem(item)
 {
+    var order = '?';
+    if(item.order) order =  item.order;
+
     let template = "<div id=\"result-" + item.id + "\" class=\"result_item\">";
-    template += "<h3 class=\"item_index\">?</h3>";
+    template += "<h3 class=\"item_index\">" + order + "</h3>";
     template += "<div class=\"item_separator\"></div>";
     template += "<h3 class=\"item_name\">" + item.name + "</h3>";
     template += "<div class=\"item_separator\"></div>";

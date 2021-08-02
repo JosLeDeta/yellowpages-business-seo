@@ -4,7 +4,6 @@ from analyzer import AnalyzeWeb
 from multiprocessing import Process, freeze_support
 from flask import Flask, send_from_directory
 
-
 app = Flask(__name__)
 
 @app.route("/")
@@ -37,6 +36,7 @@ class Worker(threading.Thread):
             response = [{'id': business_dict[business], 'name': business.name, 'website': business.website} for business in entries]
             coro = self.websocket.send(json.dumps({'action': 'result', 'data': response}))    
             asyncio.run_coroutine_threadsafe(coro, self.loop)
+            scores = {}
 
             for business in business_dict:
                 if self.stop:
@@ -48,10 +48,15 @@ class Worker(threading.Thread):
                     score = 0
                 
                 score = int(score * 100)
-
+                scores[business] = score
                 response = {'action': 'set_score', 'id': business_dict[business], 'score': score}
                 coro = self.websocket.send(json.dumps(response))
                 asyncio.run_coroutine_threadsafe(coro, self.loop)
+            
+            sort_business = sorted(scores.items(), key= lambda x: x[1])
+            sort_business = [{'order': i + 1, 'id': business_dict[k], 'name': k.name, 'website': k.website, 'score': scores[k]} for i, (k, v) in enumerate(sort_business)]
+            coro = self.websocket.send(json.dumps({'action': 'final_results', 'data': sort_business}))
+            asyncio.run_coroutine_threadsafe(coro, self.loop)
 
 workers = []
 
