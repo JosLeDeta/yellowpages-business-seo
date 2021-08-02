@@ -41,7 +41,7 @@ function RasterItem(item)
     template += "<div class=\"item_separator\"></div>";
     template += "<div class=\"score\">";
     template += "<div class=\"score_fill\"></div>";
-    template += "<h4 class=\"score_value\">0</h4>";
+    template += "<h4 class=\"score_value\">wait</h4>";
     template += "</div>";
     template += "<div class=\"item_separator\"></div>";
     template += "<div class=\"more_info\">";
